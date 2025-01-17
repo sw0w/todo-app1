@@ -19,6 +19,7 @@ const TodoList = ({
       display: "flex",
       justifyContent: "center",
       flexWrap: "wrap",
+      marginTop: "50px",
     }}
   >
     {todos.map((todo) => (

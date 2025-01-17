@@ -1,9 +1,34 @@
 body {
-  background-color: rgb(229, 241, 245);
+  background-color: rgb(241, 240, 233);
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 * {
   font-family: "Plus Jakarta Sans", serif;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.background-image2 {
+  opacity: 0;
+  position: absolute;
+  top: 50px;
+  left: 20px;
+  right: 0;
+  bottom: 10px;
+  width: 100%;
+  object-fit: cover;
+  z-index: -1;
+  filter: blur(2px) drop-shadow(20px 20px 20px rgba(0, 0, 0, 0.2));
+  animation: fadeIn2 2s forwards;
+}
+
+@keyframes fadeIn2 {
+  to {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
 }

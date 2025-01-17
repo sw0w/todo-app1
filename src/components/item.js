@@ -14,6 +14,7 @@ const TodoItem = ({
   return (
     <Box
       sx={{
+        opacity: 0,
         padding: 5,
         backgroundColor: "#f4f4f4",
         borderRadius: 2,
@@ -22,6 +23,7 @@ const TodoItem = ({
         maxWidth: 300,
         minWidth: 100,
         textAlign: "center",
+        animation: "fadeIn2 1s forwards",
       }}
     >
       {todo.isEditing ? (

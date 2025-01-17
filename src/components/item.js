@@ -37,6 +37,7 @@ const TodoItem = ({
           sx={{
             minWidth: 300,
             margin: 1,
+            marginBottom: 2,
           }}
           onChange={(e) => {
             const tObjectIndex = temporarytext.findIndex(

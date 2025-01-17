@@ -5,7 +5,7 @@ import Header from "./header";
 import "../css/profile.css";
 
 const ProfileView = () => {
-  const { uid } = useParams(); // This gets the user ID from the URL parameter
+  const { uid } = useParams();
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
 

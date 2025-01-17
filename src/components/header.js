@@ -45,6 +45,17 @@ const Header = () => {
               About
             </Button>
           </Link>
+
+          <Link to="/feedback">
+            <Button
+              variant="text"
+              className={`nav-button ${
+                location.pathname === "/feedback" ? "active" : ""
+              }`}
+            >
+              Feedback
+            </Button>
+          </Link>
         </div>
         <Login />
       </Box>

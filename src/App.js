@@ -3,8 +3,10 @@ import Header from "./components/header";
 import HomeView from "./components/homeView";
 import AboutView from "./components/aboutView";
 import ListView from "./components/listView";
+import ContactView from "./components/contactView";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginView from "./components/loginView";
+import FeedbackView from "./components/feedbackView";
 import "./App.css";
 import ProfileView from "./components/profileView";
 
@@ -23,7 +25,9 @@ function App() {
           }
         />
         <Route path="/login" element={<LoginView />} />
+        <Route path="/contact" element={<ContactView />} />
         <Route path="/users/:uid" element={<ProfileView />} />
+        <Route path="/feedback" element={<FeedbackView />} />
       </Routes>
     </Router>
   );

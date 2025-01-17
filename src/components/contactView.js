@@ -6,6 +6,7 @@ import { useFormStatus } from "react-dom";
 
 const ContactView = () => {
   const { pending, data, error } = useFormStatus();
+  // Field validation
 
   const submitForm = async (formData) => {
     console.log("Form submitted with data:", formData);

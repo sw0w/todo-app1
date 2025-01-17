@@ -27,7 +27,7 @@ const ContactView = () => {
       const result = await response.json();
       console.log("Success:", result);
     } catch (error) {
-      console.error("Error submitting feedback:", err.message);
+      console.error("Error submitting feedback:", error.message);
     }
   };
 

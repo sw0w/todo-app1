@@ -59,7 +59,7 @@
 .contact-button {
   width: auto;
   padding: 10px 20px;
-  align-self: flex-start; /* Left-align the button */
+  align-self: flex-start;
 }
 
 .half-background {

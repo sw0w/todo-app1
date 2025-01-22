@@ -17,7 +17,7 @@ const ContactView = () => {
       setText(e.target.value);
     }
   };
-
+  let validationErrors = { ...errors };
   // Field validation
   const handleValidation = (name, value) => {
     const isEmpty = (v) => v.trim() === "";
@@ -27,8 +27,6 @@ const ContactView = () => {
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
 
     const containsUnsupportedCharacters = (v) => /[\d\s\W]/.test(v);
-
-    let validationErrors = { ...errors };
 
     // NAME
     if (name === "name") {
@@ -78,12 +76,27 @@ const ContactView = () => {
       console.log("Errors:", errors);
       return;
     }
-
     const formObject = Object.fromEntries(data.entries());
+    const hasEmptyForms = Object.values(formObject).some((value) => !value);
+
+    if (hasEmptyForms) {
+      if (!formObject.name) {
+        validationErrors.name = "Required";
+        setErrors(validationErrors);
+      }
+      if (!formObject.email) {
+        validationErrors.email = "Required";
+        setErrors(validationErrors);
+      }
+      if (!formObject.message) {
+        validationErrors.message = "Required";
+        setErrors(validationErrors);
+      }
+      return;
+    }
 
     try {
       setCooldown(true);
-
       setTimeout(() => {
         setCooldown(false);
       }, 5000);
@@ -125,9 +138,9 @@ const ContactView = () => {
         <div className="contact-container">
           <form
             className="contact-form"
-            action={(e) => {
+            action={(formData) => {
               if (!pending) {
-                submitForm(e);
+                submitForm(formData);
               }
             }}
           >

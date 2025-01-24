@@ -1,125 +1,43 @@
 import Header from "./header";
 import React from "react";
-import { useState } from "react";
 import { TextField, Button, Typography, Box } from "@mui/material";
 import "../css/contact.css";
-import { useFormStatus } from "react-dom";
+import { useForm } from "react-hook-form";
 
 const ContactView = () => {
-  const [errors, setErrors] = useState({});
-  const { pending, data, error } = useFormStatus();
-  const [text, setText] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+    },
+  });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    handleValidation(name, value);
-    if (name === "message") {
-      setText(e.target.value);
-    }
-  };
-  let validationErrors = { ...errors };
-  // Field validation
-  const handleValidation = (name, value) => {
-    const isEmpty = (v) => v.trim() === "";
-    const isTooShort = (v, minLength) => v.length < minLength;
-    const isTooLong = (v, maxLength) => v.length > maxLength;
-    const isValidEmail = (v) =>
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
-
-    const containsUnsupportedCharacters = (v) => /[\d\s\W]/.test(v);
-
-    // NAME
-    if (name === "name") {
-      if (isEmpty(value)) {
-        validationErrors.name = "Name cannot be empty";
-      } else if (isTooShort(value, 3)) {
-        validationErrors.name = "Name cannot be shorter than 3 letters";
-      } else if (containsUnsupportedCharacters(value)) {
-        validationErrors.name = "Only letters are allowed";
-      } else {
-        delete validationErrors.name;
-      }
-    }
-    // EMAIL
-    if (name === "email") {
-      if (isEmpty(value)) {
-        validationErrors.email = "Email cannot be empty";
-      } else if (!isValidEmail(value)) {
-        validationErrors.email = "Email is not valid";
-      } else {
-        delete validationErrors.email;
-      }
-    }
-
-    // MESSAGE
-    if (name === "message") {
-      if (isTooLong(value, 3000)) {
-        validationErrors.message = "message cannot be over 3000 characters.";
-      } else {
-        delete validationErrors.message;
-      }
-    }
-
-    setErrors(validationErrors);
-  };
-
-  const [Cooldown, setCooldown] = useState(false);
-
-  const submitForm = async (data) => {
-    if (Cooldown) {
-      console.log("Please wait before submitting again.");
-      return;
-    }
-
-    const hasErrors = Object.keys(errors).length > 0;
-    if (hasErrors) {
-      console.log("Errors:", errors);
-      return;
-    }
-    const formObject = Object.fromEntries(data.entries());
-    const hasEmptyForms = Object.values(formObject).some((value) => !value);
-
-    if (hasEmptyForms) {
-      if (!formObject.name) {
-        validationErrors.name = "Required";
-        setErrors(validationErrors);
-      }
-      if (!formObject.email) {
-        validationErrors.email = "Required";
-        setErrors(validationErrors);
-      }
-      if (!formObject.message) {
-        validationErrors.message = "Required";
-        setErrors(validationErrors);
-      }
-      return;
-    }
-
+  async function SubmitForm(event) {
     try {
-      setCooldown(true);
-      setTimeout(() => {
-        setCooldown(false);
-      }, 5000);
-
       const response = await fetch(
         "https://dummyjson.com/c/7237-500e-488f-a50c",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formObject),
+          body: JSON.stringify(event),
         }
       );
 
       if (!response.ok) {
         throw new Error("Failed to submit. Try again later.");
       }
-      console.log("Form submitted with data:", formObject);
+
       const result = await response.json();
       console.log("Success:", result);
     } catch (error) {
-      console.error("Error submitting feedback:", error.message);
+      console.error("Error:", error);
     }
-  };
+  }
 
   return (
     <>
@@ -136,14 +54,7 @@ const ContactView = () => {
         </div>
 
         <div className="contact-container">
-          <form
-            className="contact-form"
-            action={(formData) => {
-              if (!pending) {
-                submitForm(formData);
-              }
-            }}
-          >
+          <form className="contact-form" onSubmit={handleSubmit(SubmitForm)}>
             <div className="name-email-container">
               <TextField
                 fullWidth
@@ -151,19 +62,31 @@ const ContactView = () => {
                 name="name"
                 variant="standard"
                 className="contact-field"
-                onChange={handleChange}
+                {...register("name", {
+                  required: "Name is required",
+                  pattern: {
+                    value: /^[a-zA-Z ]+$/,
+                    message: "Invalid name format",
+                  },
+                })}
                 error={!!errors?.name}
-                helperText={errors?.name || "Type your name"}
+                helperText={errors?.name?.message || "Type your name here"}
               />
               <TextField
                 fullWidth
                 label="Email"
                 name="email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email format",
+                  },
+                })}
                 variant="standard"
                 className="contact-field"
-                onChange={handleChange}
                 error={!!errors?.email}
-                helperText={errors?.email || "Type your email"}
+                helperText={errors?.email?.message || "Type your email here"}
               />
             </div>
 
@@ -175,9 +98,11 @@ const ContactView = () => {
               rows={4}
               variant="standard"
               className="contact-field"
-              onChange={handleChange}
+              {...register("message", {
+                required: "Message is required",
+              })}
               error={!!errors?.message}
-              helperText={errors?.message || `${text.length}/3000`}
+              helperText={errors?.message?.message || "Type your message here"}
             />
 
             <Button
@@ -185,9 +110,8 @@ const ContactView = () => {
               color="primary"
               className="contact-button"
               type="submit"
-              disabled={pending}
             >
-              {pending ? "Submitting..." : "Submit"}
+              Submit
             </Button>
           </form>
         </div>

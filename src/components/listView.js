@@ -9,7 +9,6 @@ const ListView = () => {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
   const [temporarytext, settemptext] = useState([]);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     async function fetchTodos() {
@@ -23,8 +22,6 @@ const ListView = () => {
     }
     fetchTodos();
   }, []);
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const toggleEdit = (id) => {
     setTodos((prev) =>
@@ -71,20 +68,13 @@ const ListView = () => {
     })
       .then((res) => res.json())
       .then((data) => setTodos((prev) => [...prev, data]));
-    setIsVisible(false);
   };
 
   return (
     <div className="App">
       <Header />
       <Box className="half-background" />
-      <TodoInput
-        task={task}
-        setTask={setTask}
-        handleAddToDo={handleAddToDo}
-        isVisible={isVisible}
-        toggleVisibility={toggleVisibility}
-      />
+      <TodoInput task={task} setTask={setTask} handleAddToDo={handleAddToDo} />
       <TodoList
         todos={todos}
         toggleEdit={toggleEdit}
